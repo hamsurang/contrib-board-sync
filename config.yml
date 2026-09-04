@@ -1,0 +1,16 @@
+upstream: facebook/astryx
+forkRepoName: astryx
+
+notion:
+  properties:
+    status: 상태
+    prUrl: PR 링크
+    syncKey: 동기화 키
+    date: 날짜
+  status:
+    teamReview: In Team-Review
+    maintainerReview: In Maintainer-Review
+    merged: Merged
+    closed: Closed
+
+titleFormat: "[{name}] {title}"
