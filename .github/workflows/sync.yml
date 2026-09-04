@@ -1,0 +1,29 @@
+name: sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: 아무것도 쓰지 않고 계획만 출력한다
+        type: boolean
+        default: true
+  # 백필과 dry-run 을 마치고 사람들에게 공지한 뒤 아래 주석을 푼다.
+  # schedule:
+  #   - cron: '*/10 * * * *'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm sync ${{ inputs.dryRun && '--dry-run' || '' }}
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
