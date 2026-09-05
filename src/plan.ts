@@ -31,6 +31,19 @@ function formatTitle(pr: PullRequest, config: Config): string {
     .replaceAll('{title}', pr.title)
 }
 
+/**
+ * 생성 시 담당자. Team-Review 카드는 팀 리뷰 요청이라 notionUserId 가 있는 멤버 전원을
+ * 넣어 알림이 가게 한다(작성자가 맨 앞). 그 외 칸은 작성자만 넣는다.
+ */
+function assigneesFor(pr: PullRequest, status: string, config: Config): string[] {
+  const author = config.members.find((m) => m.login === pr.login)?.notionUserId
+  if (status !== config.notion.status.teamReview) return author ? [author] : []
+  const others = config.members
+    .filter((m) => m.login !== pr.login && m.notionUserId)
+    .map((m) => m.notionUserId!)
+  return author ? [author, ...others] : others
+}
+
 export function plan(prs: PullRequest[], cards: Card[], config: Config): PlanResult {
   const warnings: string[] = []
 
@@ -64,7 +77,7 @@ export function plan(prs: PullRequest[], cards: Card[], config: Config): PlanRes
     const card = byKey.get(key)
 
     if (!card) {
-      const assigneeId = config.members.find((m) => m.login === pr.login)?.notionUserId
+      const assigneeIds = assigneesFor(pr, status, config)
       actions.push({
         kind: 'create',
         key,
@@ -72,7 +85,7 @@ export function plan(prs: PullRequest[], cards: Card[], config: Config): PlanRes
         status,
         prUrl: pr.url,
         date: pr.createdAt.slice(0, 10),
-        ...(assigneeId ? { assigneeId } : {}),
+        ...(assigneeIds.length > 0 ? { assigneeIds } : {}),
       })
       continue
     }

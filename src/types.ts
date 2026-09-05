@@ -33,7 +33,7 @@ export type Card = {
 }
 
 export type Action =
-  | { kind: 'create'; key: string; title: string; status: string; prUrl: string; date: string; assigneeId?: string }
+  | { kind: 'create'; key: string; title: string; status: string; prUrl: string; date: string; assigneeIds?: string[] }
   | { kind: 'update'; pageId: string; key: string; status?: string; prUrl?: string }
 
 export type PlanResult = { actions: Action[]; warnings: string[] }

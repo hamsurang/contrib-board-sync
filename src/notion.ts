@@ -140,8 +140,8 @@ export class NotionClient {
             [names.prUrl]: { url: action.prUrl },
             [names.syncKey]: { rich_text: [{ text: { content: action.key } }] },
             [names.date]: { date: { start: action.date } },
-            ...(names.assignee && action.assigneeId
-              ? { [names.assignee]: { people: [{ id: action.assigneeId }] } }
+            ...(names.assignee && action.assigneeIds
+              ? { [names.assignee]: { people: action.assigneeIds.map((id) => ({ id })) } }
               : {}),
           },
         }),

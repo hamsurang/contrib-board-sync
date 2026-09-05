@@ -71,6 +71,8 @@ upstream을 우선하고, 그 안에서 가장 최근에 만들어진 것을 택
 켜진 카드를 건너뛰게 한다.
 
 `담당자`는 `members.yml`의 `notionUserId`가 있는 멤버에 한해 생성 시에만 채운다.
+`In Team-Review`로 만들어지는 카드는 팀 리뷰 요청이므로 작성자를 앞세워 멤버 전원을
+넣어 알림이 가게 하고, 다른 칸으로 만들어지는 카드는 작성자만 넣는다.
 Notion people 타입이라 GitHub 계정과 잇는 매핑이 필요하고, 이름으로 추측하면
 동명이인에서 사고가 나므로 id 를 명시한다. id 가 없는 멤버는 비워둔다.
 `config.yml`의 `notion.properties.assignee`를 빼면 아예 채우지 않는다.

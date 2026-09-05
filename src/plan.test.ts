@@ -52,15 +52,33 @@ describe('plan — 카드 생성', () => {
     ])
   })
 
-  it('멤버에 notionUserId 가 있으면 생성 액션에 assigneeId 를 싣는다', () => {
-    const withId: Config = { ...config, members: [{ login: 'Kyujenius', notionUserId: 'u-1' }] }
-    const { actions } = plan([pr()], [], withId)
-    expect(actions[0]).toMatchObject({ kind: 'create', assigneeId: 'u-1' })
+  const team: Config = {
+    ...config,
+    members: [
+      { login: 'Kyujenius', notionUserId: 'u-1' },
+      { login: 'azure-553', notionUserId: 'u-2' },
+      { login: 'korkt-kim' },
+    ],
+  }
+
+  it('Team-Review 카드는 작성자를 앞세워 notionUserId 가 있는 멤버 전원을 담당자로 싣는다', () => {
+    const { actions } = plan([pr({ isUpstream: false, repo: 'Kyujenius/astryx' })], [], team)
+    expect(actions[0]).toMatchObject({ status: 'In Team-Review', assigneeIds: ['u-1', 'u-2'] })
   })
 
-  it('notionUserId 가 없으면 assigneeId 를 싣지 않는다', () => {
+  it('Team-Review 가 아닌 카드는 작성자만 담당자로 싣는다', () => {
+    const { actions } = plan([pr()], [], team)
+    expect(actions[0]).toMatchObject({ status: 'In Maintainer-Review', assigneeIds: ['u-1'] })
+  })
+
+  it('작성자에게 notionUserId 가 없어도 Team-Review 카드에는 나머지 멤버를 싣는다', () => {
+    const { actions } = plan([pr({ login: 'korkt-kim', isUpstream: false, repo: 'korkt-kim/astryx' })], [], team)
+    expect(actions[0]).toMatchObject({ assigneeIds: ['u-1', 'u-2'] })
+  })
+
+  it('notionUserId 가 하나도 없으면 assigneeIds 를 싣지 않는다', () => {
     const { actions } = plan([pr()], [], config)
-    expect(actions[0]).not.toHaveProperty('assigneeId')
+    expect(actions[0]).not.toHaveProperty('assigneeIds')
   })
 
   it('upstream PR 이 열려 있고 카드가 없으면 Maintainer-Review 카드를 만든다', () => {
