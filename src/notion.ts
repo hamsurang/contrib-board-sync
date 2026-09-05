@@ -55,6 +55,7 @@ export class NotionClient {
     const names = this.config.notion.properties
 
     for (const [role, name] of Object.entries(names)) {
+      if (name === undefined) continue
       if (!props[name]) {
         throw new Error(`Notion DB 에 '${name}' 속성이 없다 (config.yml 의 notion.properties.${role})`)
       }
@@ -84,6 +85,9 @@ export class NotionClient {
     }
     if (props[names.prUrl]!.type !== 'url') {
       throw new Error(`'${names.prUrl}' 속성은 url 이어야 한다 (지금은 ${props[names.prUrl]!.type})`)
+    }
+    if (names.assignee && props[names.assignee]!.type !== 'people') {
+      throw new Error(`'${names.assignee}' 속성은 people 이어야 한다 (지금은 ${props[names.assignee]!.type})`)
     }
   }
 
@@ -136,6 +140,9 @@ export class NotionClient {
             [names.prUrl]: { url: action.prUrl },
             [names.syncKey]: { rich_text: [{ text: { content: action.key } }] },
             [names.date]: { date: { start: action.date } },
+            ...(names.assignee && action.assigneeId
+              ? { [names.assignee]: { people: [{ id: action.assigneeId }] } }
+              : {}),
           },
         }),
       })

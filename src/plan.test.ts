@@ -52,6 +52,17 @@ describe('plan — 카드 생성', () => {
     ])
   })
 
+  it('멤버에 notionUserId 가 있으면 생성 액션에 assigneeId 를 싣는다', () => {
+    const withId: Config = { ...config, members: [{ login: 'Kyujenius', notionUserId: 'u-1' }] }
+    const { actions } = plan([pr()], [], withId)
+    expect(actions[0]).toMatchObject({ kind: 'create', assigneeId: 'u-1' })
+  })
+
+  it('notionUserId 가 없으면 assigneeId 를 싣지 않는다', () => {
+    const { actions } = plan([pr()], [], config)
+    expect(actions[0]).not.toHaveProperty('assigneeId')
+  })
+
   it('upstream PR 이 열려 있고 카드가 없으면 Maintainer-Review 카드를 만든다', () => {
     const { actions } = plan([pr()], [], config)
     expect(actions[0]).toMatchObject({ kind: 'create', status: 'In Maintainer-Review' })

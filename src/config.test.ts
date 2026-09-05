@@ -38,6 +38,15 @@ describe('loadConfig', () => {
     expect(loadConfig(dir).members[0]).toEqual({ login: 'Kyujenius', name: '홍규진' })
   })
 
+  it('members 의 notionUserId 와 properties.assignee 는 선택이다', () => {
+    const withAssignee = VALID_CONFIG.replace('date: 날짜 }', 'date: 날짜, assignee: 담당자 }')
+    const dir = fixture(withAssignee, 'members:\n  - login: Kyujenius\n    notionUserId: u-1\n')
+    const config = loadConfig(dir)
+    expect(config.notion.properties.assignee).toBe('담당자')
+    expect(config.members[0]).toEqual({ login: 'Kyujenius', notionUserId: 'u-1' })
+    expect(loadConfig(fixture(VALID_CONFIG, 'members:\n  - login: Kyujenius\n')).notion.properties).not.toHaveProperty('assignee')
+  })
+
   it('빠진 키의 이름을 그대로 말하며 실패한다', () => {
     const missing = VALID_CONFIG.replace('forkRepoName: astryx\n', '')
     const dir = fixture(missing, 'members:\n  - login: Kyujenius\n')

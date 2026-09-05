@@ -1,12 +1,12 @@
 export type PrState = 'OPEN' | 'CLOSED' | 'MERGED'
 
-export type Member = { login: string; name?: string }
+export type Member = { login: string; name?: string; notionUserId?: string }
 
 export type Config = {
   upstream: string
   forkRepoName: string
   notion: {
-    properties: { status: string; prUrl: string; syncKey: string; date: string }
+    properties: { status: string; prUrl: string; syncKey: string; date: string; assignee?: string }
     status: { teamReview: string; maintainerReview: string; merged: string; closed: string }
   }
   titleFormat: string
@@ -33,7 +33,7 @@ export type Card = {
 }
 
 export type Action =
-  | { kind: 'create'; key: string; title: string; status: string; prUrl: string; date: string }
+  | { kind: 'create'; key: string; title: string; status: string; prUrl: string; date: string; assigneeId?: string }
   | { kind: 'update'; pageId: string; key: string; status?: string; prUrl?: string }
 
 export type PlanResult = { actions: Action[]; warnings: string[] }

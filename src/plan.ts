@@ -64,6 +64,7 @@ export function plan(prs: PullRequest[], cards: Card[], config: Config): PlanRes
     const card = byKey.get(key)
 
     if (!card) {
+      const assigneeId = config.members.find((m) => m.login === pr.login)?.notionUserId
       actions.push({
         kind: 'create',
         key,
@@ -71,6 +72,7 @@ export function plan(prs: PullRequest[], cards: Card[], config: Config): PlanRes
         status,
         prUrl: pr.url,
         date: pr.createdAt.slice(0, 10),
+        ...(assigneeId ? { assigneeId } : {}),
       })
       continue
     }

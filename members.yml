@@ -1,7 +1,10 @@
 members:
   - login: Kyujenius
     name: 홍규진
+    notionUserId: 6e6f3595-7e7c-4a7c-bb0e-2d38792bd839
   - login: azure-553
     name: 심미진
+    notionUserId: 695afc79-9d92-4295-913f-67d9f00299a2
   - login: korkt-kim
     name: 김경태
+    notionUserId: 773363d3-e05a-4bf4-ad0b-9eb43ac951d4

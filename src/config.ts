@@ -27,6 +27,7 @@ export function loadConfig(dir: string): Config {
         prUrl: must(props.prUrl, 'notion.properties.prUrl'),
         syncKey: must(props.syncKey, 'notion.properties.syncKey'),
         date: must(props.date, 'notion.properties.date'),
+        ...(props.assignee ? { assignee: props.assignee } : {}),
       },
       status: {
         teamReview: must(status.teamReview, 'notion.status.teamReview'),
